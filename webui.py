@@ -380,7 +380,8 @@ while run_server:
 
         with gr.Tab("Clone Voice"):
             with gr.Row():
-                input_audio_filename = gr.Audio(label="Input audio.wav", source="upload", type="filepath")
+                upload_clone_audio_filename = gr.Audio(label="Input audio.wav", source="upload", type="filepath")
+                mic_clone_audio_filename = gr.Audio(label="Record directly in to clone voice", source="microphone", type="filepath")
             #transcription_text = gr.Textbox(label="Transcription Text", lines=1, placeholder="Enter Text of your Audio Sample here...")
             with gr.Row():
                 with gr.Column():
@@ -389,7 +390,8 @@ while run_server:
                 with gr.Column():
                     tokenizerlang = gr.Dropdown(tokenizer_language_list, label="Base Language Tokenizer", value=tokenizer_language_list[1])
             with gr.Row():
-                clone_voice_button = gr.Button("Create Voice")
+                upload_clone_voice_button = gr.Button("Create Voice")
+                mic_clone_voice_button = gr.Button("Clone Microphone Voice")
             with gr.Row():
                 dummy = gr.Text(label="Progress")
 
@@ -447,7 +449,8 @@ while run_server:
         hidden_checkbox.change(delete_output_files, [hidden_checkbox], [hidden_checkbox])
         upload_swap_voice_button.click(swap_voice_from_audio, inputs=[upload_swap_audio_filename, speaker_swap, swap_tokenizer_lang, swap_seed, swap_batchcount], outputs=output_swap)
         mic_swap_voice_button.click(swap_voice_from_audio, inputs=[mic_swap_audio_filename, speaker_swap, swap_tokenizer_lang, swap_seed, swap_batchcount], outputs=output_swap)
-        clone_voice_button.click(clone_voice, inputs=[input_audio_filename, tokenizerlang, output_voice], outputs=dummy)
+        mic_clone_voice_button.click(clone_voice, inputs=[mic_clone_audio_filename, tokenizerlang, output_voice], outputs=dummy)
+        upload_clone_voice_button.click(clone_voice, inputs=[upload_clone_audio_filename, tokenizerlang, output_voice], outputs=dummy)
         training_prepare_button.click(training_prepare, inputs=[prepare_dropdown, prepare_semantics_number], outputs=dummytrd)
         train_button.click(start_training, inputs=[save_model_epoch, max_epochs], outputs=dummytrain)
         button_apply_settings.click(apply_settings, inputs=[themes, input_server_name, input_server_port, share_checkbox, input_desired_len, input_max_len, input_silence_break, input_silence_speakers])
