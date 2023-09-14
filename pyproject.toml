@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "bark-gui"
+version = "0.1.0"
+description = ""
+authors = ["kelsey <enktal@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.13"
+funcy = "^2.0"
+linkify = "^1.4"
+mutagen = "^1.47.0"
+pytorch-seed = "^0.2.0"
+pyyaml = "^6.0.1"
+sentencepiece = "^0.1.99"
+audiolm-pytorch = "^1.4.1"
+gradio = "^3.44.1"
+transformers = "^4.33.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
