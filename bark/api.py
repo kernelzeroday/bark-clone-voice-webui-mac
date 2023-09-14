@@ -3,16 +3,63 @@ from typing import Dict, Optional, Union
 import numpy as np
 
 from .generation import codec_decode, generate_coarse, generate_fine, generate_text_semantic
+from ..cloning.clonevoice import clone_voice
+from ..swap_voice import swap_voice_from_audio
+
+
+def create_clone_voice(audio_filepath, tokenizer_lang, dest_filename, progress=None):
+    """Clone a voice based on provided voice data.
+
+    Args:
+        audio_filepath: Path to the audio file to be cloned.
+        tokenizer_lang: Language of the tokenizer.
+        dest_filename: Destination filename for the cloned voice.
+        progress: Progress tracker.
+
+    Returns:
+        Cloned voice.
+    """
+    return clone_voice(audio_filepath, tokenizer_lang, dest_filename, progress)
+
+def generate_swapped_voice(swap_audio_filename, selected_speaker, tokenizer_lang, seed, batchcount, progress=None):
+    """Generate a swapped voice based on provided voice data and selected speaker.
+
+    Args:
+        swap_audio_filename: Path to the audio file to be swapped.
+        selected_speaker: The selected speaker for voice swapping.
+        tokenizer_lang: Language of the tokenizer.
+        seed: Seed for random number generator.
+        batchcount: Batch count for voice generation.
+        progress: Progress tracker.
+
+    Returns:
+        Swapped voice.
+    """
+    return swap_voice_from_audio(swap_audio_filename, selected_speaker, tokenizer_lang, seed, batchcount, progress)
 
 
 def generate_with_settings(text_prompt, semantic_temp=0.6, eos_p=0.2, coarse_temp=0.7, fine_temp=0.5, voice_name=None, output_full=False):
+    """
+    Generate text using the specified settings.
 
+    Args:
+        text_prompt (str): The text prompt to generate from.
+        semantic_temp (float, optional): The temperature for semantic generation. Defaults to 0.6.
+        eos_p (float, optional): The minimum end-of-sentence probability for semantic generation. Defaults to 0.2.
+        coarse_temp (float, optional): The temperature for coarse generation. Defaults to 0.7.
+        fine_temp (float, optional): The temperature for fine generation. Defaults to 0.5.
+        voice_name (str, optional): The voice name to use for generation. Defaults to None.
+        output_full (bool, optional): Whether to output the full generation or just the decoded fine prompt. Defaults to False.
+
+    Returns:
+        str or tuple: The generated text. If output_full is True, returns a tuple containing the full generation and the decoded fine prompt.
+    """
     # generation with more control
     x_semantic = generate_text_semantic(
         text_prompt,
         history_prompt=voice_name,
         temp=semantic_temp,
-        min_eos_p = eos_p,
+        min_eos_p=eos_p,
         use_kv_caching=True
     )
 
@@ -75,14 +122,21 @@ def semantic_to_waveform(
     """Generate audio array from semantic input.
 
     Args:
-        semantic_tokens: semantic token output from `text_to_semantic`
-        history_prompt: history choice for audio cloning
-        temp: generation temperature (1.0 more diverse, 0.0 more conservative)
-        silent: disable progress bar
-        output_full: return full generation to be used as a history prompt
+        semantic_tokens (np.ndarray): Semantic token output from `text_to_semantic`.
+        history_prompt (Optional[Union[Dict, str]], optional): History choice for audio cloning. Defaults to None.
+        temp (float, optional): Generation temperature (1.0 more diverse, 0.0 more conservative). Defaults to 0.7.
+        silent (bool, optional): Disable progress bar. Defaults to False.
+        output_full (bool, optional): Return full generation to be used as a history prompt. Defaults to False.
 
     Returns:
-        numpy audio array at sample frequency 24khz
+        np.ndarray: Numpy audio array at sample frequency 24khz.
+        
+        If `output_full` is True, the function returns a tuple containing the full generation and the audio array:
+        - full_generation (dict): A dictionary containing the following prompts:
+            - "semantic_prompt": semantic_tokens
+            - "coarse_prompt": coarse_tokens
+            - "fine_prompt": fine_tokens
+        - audio_arr (np.ndarray): Numpy audio array at sample frequency 24khz.
     """
     coarse_tokens = generate_coarse(
         semantic_tokens,
@@ -156,3 +210,6 @@ def generate_audio(
     else:
         audio_arr = out
     return audio_arr
+
+
+
