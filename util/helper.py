@@ -31,5 +31,5 @@ def add_id3_tag(filename, text, speakername, seed):
     audio["TIT2"] = TIT2(encoding=3, text=text[:60])
     audio["TPE1"] = TPE1(encoding=3, text=f"Voice {speakername} using Seed={seed}")
     audio["TPUB"] = TPUB(encoding=3, text="Bark by Suno AI")
-    audio["COMMENT"] = COMM(encoding=3, text="Generated with Bark GUI - Text-Prompted Generative Audio Model. Visit https://github.com/C0untFloyd/bark-gui")
+    audio["COMMENT"] = COMM(encoding=3, text="Generated with Bark GUI - Text-Prompted Generative Audio Model. Visit https://github.com/kernelzeroday/bark-clone-voice-webui-mac")
     audio.save()

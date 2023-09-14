@@ -11,7 +11,7 @@ USER bark
 WORKDIR /bark
 
 # Clone git repo
-RUN git clone https://github.com/C0untFloyd/bark-gui 
+RUN git clone https://github.com/kernelzeroday/bark-clone-voice-webui-mac
 
 # Switch to git directory
 WORKDIR /bark/bark-gui

@@ -1,4 +1,4 @@
-from bark.generation import load_codec_model, generate_text_semantic, grab_best_device
+from bark.generation import load_codec_model, generate_text_semantic, grab_best_device, SAMPLE_RATE
 from encodec.utils import convert_audio
 from bark.hubert.hubert_manager import HuBERTManager
 from bark.hubert.pre_kmeans_hubert import CustomHubert
@@ -56,12 +56,6 @@ def swap_voice_from_audio(swap_audio_filename, selected_speaker, tokenizer_lang,
     settings = Settings('config.yaml')
 
     result = create_filename(settings.output_folder_path, None, "swapvoice",".wav")
-    write_wav(result, model.sample_rate, audio)
+    write_wav(result, SAMPLE_RATE, audio)
     return result
 
-def record_audio_interface():
-    def record(_):
-        return gradio.inputs.Microphone()
-
-    iface = gradio.Interface(fn=record, inputs='Microphone', outputs='Audio')
-    iface.launch()

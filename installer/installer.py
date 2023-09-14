@@ -30,7 +30,7 @@ def check_env():
 def install_dependencies():
     # Install Git and clone repo
     run_cmd("conda install -y -k git")
-    run_cmd("git clone https://github.com/C0untFloyd/bark-gui.git")
+    run_cmd("git clone https://github.com/kernelzeroday/bark-clone-voice-webui-mac.git")
 
     # Select your GPU or, choose to run in CPU mode
     print("Do you have a GPU (Nvidia)?")

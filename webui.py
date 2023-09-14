@@ -232,7 +232,7 @@ gradio: {gr.__version__}
     
 
 logger = logging.getLogger(__name__)
-APPTITLE = "Bark UI Enhanced v0.7.4"
+APPTITLE = "Bark Webui"
 
 
 autolaunch = False
@@ -298,7 +298,7 @@ while run_server:
     with gr.Blocks(title=f"{APPTITLE}", mode=f"{APPTITLE}", theme=settings.selected_theme) as barkgui:
         with gr.Row():
             with gr.Column():
-                gr.Markdown(f"### [{APPTITLE}](https://github.com/C0untFloyd/bark-gui)")
+                gr.Markdown(f"### [{APPTITLE}](https://github.com/kernelzeroday/bark-clone-voice-webui-mac)")
             with gr.Column():
                 gr.HTML(create_version_html(), elem_id="versions")
 
@@ -363,16 +363,18 @@ while run_server:
 
         with gr.Tab("Swap Voice"):
             with gr.Row():
-                 swap_audio_filename = gr.Audio(label="Input audio.wav to swap voice", source="upload", type="filepath")
+                    upload_swap_audio_filename = gr.Audio(label="Input audio.wav to swap voice", source="upload", type="filepath")
+                    mic_swap_audio_filename = gr.Audio(label="Record directly in  to swap voice", source="microphone", type="filepath")
             with gr.Row():
                  with gr.Column():
                      swap_tokenizer_lang = gr.Dropdown(tokenizer_language_list, label="Base Language Tokenizer", value=tokenizer_language_list[1])
                      swap_seed = gr.Number(label="Seed (default -1 = Random)", precision=0, value=-1)
                  with gr.Column():
-                     speaker_swap = gr.Dropdown(speakers_list, value=speakers_list[0], label="Voice")
+                     speaker_swap = gr.Dropdown(speakers_list, value=speakers_list[1], label="Voice")
                      swap_batchcount = gr.Number(label="Batch count", precision=0, value=1)
             with gr.Row():
-                swap_voice_button = gr.Button("Swap Voice")
+                upload_swap_voice_button = gr.Button("Swap Upload Voice")
+                mic_swap_voice_button = gr.Button("Swap Microphone Voice")
             with gr.Row():
                 output_swap = gr.Audio(label="Generated Audio", type="filepath")
 
@@ -443,8 +445,8 @@ while run_server:
         js = "(x) => confirm('Are you sure? This will remove all files from output folder')"
         button_delete_files.click(None, None, hidden_checkbox, _js=js)
         hidden_checkbox.change(delete_output_files, [hidden_checkbox], [hidden_checkbox])
-
-        swap_voice_button.click(swap_voice_from_audio, inputs=[swap_audio_filename, speaker_swap, swap_tokenizer_lang, swap_seed, swap_batchcount], outputs=output_swap)
+        upload_swap_voice_button.click(swap_voice_from_audio, inputs=[upload_swap_audio_filename, speaker_swap, swap_tokenizer_lang, swap_seed, swap_batchcount], outputs=output_swap)
+        mic_swap_voice_button.click(swap_voice_from_audio, inputs=[mic_swap_audio_filename, speaker_swap, swap_tokenizer_lang, swap_seed, swap_batchcount], outputs=output_swap)
         clone_voice_button.click(clone_voice, inputs=[input_audio_filename, tokenizerlang, output_voice], outputs=dummy)
         training_prepare_button.click(training_prepare, inputs=[prepare_dropdown, prepare_semantics_number], outputs=dummytrd)
         train_button.click(start_training, inputs=[save_model_epoch, max_epochs], outputs=dummytrain)
